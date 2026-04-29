@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>木石天工·千年造物</title>
+
+    <link rel="preload" href="assets/bgm.mp3" as="audio" type="audio/mpeg">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <audio id="global-bgm" src="assets/bgm.mp3" preload="auto" loop playsinline></audio>
+
+        <section id="scene-cover" class="scene active" style="background-image: url('assets/b.png'); background-size: cover; background-position: center;">
+            <button id="start-cover-btn"
+                    type="button"
+                    onpointerdown="enterGame(event)"
+                    onclick="enterGame(event)"
+                    style="position: absolute; top: 68.2%; left: 49.75%; transform: translate(-50%, -50%); background: transparent; border: none; cursor: pointer; outline: none; z-index: 10; font-family: 'STXingkai', '华文行楷', '行楷', serif; font-size: 4rem; color: #2c1b18; font-weight: bold; letter-spacing: 4px; text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.5); transition: transform 0.3s ease;" 
+                    onmouseover="this.style.transform='translate(-50%, -50%) scale(1.1)'" 
+                    onmouseout="this.style.transform='translate(-50%, -50%) scale(1)'" 
+                    title="点击开始游戏">
+                开始游戏
+            </button>
+        </section>
+
+        <section id="scene-level1" class="scene hidden">
+            <div class="level-header">
+                <h2>第一章：安居（匠心初试）</h2>
+                <p class="mission-text">任务：将左侧7个构件拖入院落骨架中，满足“门前、厅后、院中、厢两侧”的布局。</p>
+                <div class="level-story">
+                    <p><strong>【背景】</strong>故乡村落简陋无章，乡亲们仅知盖屋遮风。你学艺归来，扶助村长依照《木石天工》之理，谋划一座主次分明、合乎礼序的新宅院。</p>
+                </div>
+            </div>
+            
+            <div id="level1-workspace" class="workspace">
+                <div class="items-panel" id="zone-inventory" data-name="构件区" style="width: 220px;">
+                    <div class="items-panel-header">
+                        <p style="text-align:center; color:#5d4037; font-weight:bold; margin-top:0; margin-bottom:0;">院落构件：</p>
+                    </div>
+                    <div class="items-panel-content">
+                        <div class="draggable-item layout-item" draggable="true" id="item-hall" data-type="hall">
+                            <span class="item-text">🏠 正厅</span>
+                            <span class="info-btn" data-type="hall">?</span>
+                        </div>
+                        <div class="draggable-item layout-item" draggable="true" id="item-patio" data-type="patio">
+                            <span class="item-text">🌤️ 天井</span>
+                            <span class="info-btn" data-type="patio">?</span>
+                        </div>
+                        <div class="draggable-item layout-item" draggable="true" id="item-gate" data-type="gate">
+                            <span class="item-text">🚪 大门</span>
+                            <span class="info-btn" data-type="gate">?</span>
+                        </div>
+                        <div class="draggable-item layout-item" draggable="true" id="item-bedroom" data-type="bedroom">
+                            <span class="item-text">🛏️ 卧房</span>
+                            <span class="info-btn" data-type="bedroom">?</span>
+                        </div>
+                        <div class="draggable-item layout-item" draggable="true" id="item-wing" data-type="wing">
+                            <span class="item-text">🏚️ 厢房</span>
+                            <span class="info-btn" data-type="wing">?</span>
+                        </div>
+                        <div class="draggable-item layout-item" draggable="true" id="item-kitchen" data-type="kitchen">
+                            <span class="item-text">🔥 厨房</span>
+                            <span class="info-btn" data-type="kitchen">?</span>
+                        </div>
+                        <div class="draggable-item layout-item" draggable="true" id="item-well" data-type="well">
+                            <span class="item-text">🪣 水井</span>
+                            <span class="info-btn" data-type="well">?</span>
+                        </div>
+                    </div>
+
+                    <div id="item-desc-popup" class="item-desc-popup hidden">
+                        <div class="popup-content">
+                            <h3 id="popup-title"></h3>
+                            <p id="popup-desc"></p>
+                            <button class="close-popup-btn" onclick="closeItemDesc()">关闭</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="floor-plan-wrapper">
+                    <div id="courtyard-grid" class="courtyard-grid rural-plan">
+                        <div class="courtyard-cell drop-zone" id="cell-0-0" data-x="0" data-y="0"></div>
+                        <div class="courtyard-cell drop-zone" id="cell-1-0" data-x="1" data-y="0"></div>
+                        <div class="courtyard-cell drop-zone" id="cell-2-0" data-x="2" data-y="0"></div>
+                        
+                        <div class="courtyard-cell drop-zone" id="cell-0-1" data-x="0" data-y="1"></div>
+                        <div class="courtyard-cell drop-zone" id="cell-1-1" data-x="1" data-y="1"></div>
+                        <div class="courtyard-cell drop-zone" id="cell-2-1" data-x="2" data-y="1"></div>
+                        
+                        <div class="courtyard-cell drop-zone" id="cell-0-2" data-x="0" data-y="2"></div>
+                        <div class="courtyard-cell drop-zone" id="cell-1-2" data-x="1" data-y="2"></div>
+                        <div class="courtyard-cell drop-zone" id="cell-2-2" data-x="2" data-y="2"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; margin-bottom: 20px;">
+                <button class="btn" onclick="evaluateCourtyard()">请鲁师傅评定</button>
+                <button class="btn" onclick="resetLevel1()">重新布置</button>
+                <button id="btn-next-level1" class="btn hidden" onclick="finishLevel('level1', 'scene-level2')">布局合格：前往下一关</button>
+            </div>
+        </section>
+
+        <section id="scene-level2" class="scene hidden">
+            <div class="level-header" style="position: absolute; top: 20px; z-index: 1001;">
+                <h2 style="color: #f2ecd8; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">第二章：济世（水下桥影）</h2>
+                <p class="mission-text" style="background: rgba(0,0,0,0.6); color: #6ed1d8; border-color: #6ed1d8;">任务：拨弄虚实，安放拱石，使之归一。</p>
+            </div>
+
+            <svg style="width:0;height:0;position:absolute;" aria-hidden="true">
+                <defs>
+                    <filter id="water-ripple" x="-10%" y="-10%" width="120%" height="120%">
+                        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.045" numOctaves="2" result="noise">
+                            <animate attributeName="baseFrequency" values="0.012 0.045; 0.018 0.075; 0.012 0.045" dur="4.5s" repeatCount="indefinite"/>
+                        </feTurbulence>
+                        <feDisplacementMap in="SourceGraphic" in2="noise" scale="16" />
+                    </filter>
+                    <symbol id="bridge-shape" viewBox="0 0 300 150">
+                        <path d="M 15 150 A 135 135 0 0 1 217.5 33.1" />
+                        <path d="M 266.9 82.5 A 135 135 0 0 1 285 150" />
+                        <g class="brick-lines">
+                            <path d="M 68 82 L 68 112 M 150 16 L 150 52 M 232 46 L 232 88 M 40 122 L 40 150 M 268 112 L 268 150"/>
+                        </g>
+                    </symbol>
+                    <symbol id="magic-shape" viewBox="0 0 300 150">
+                        <path d="M 217.5 33.1 A 135 135 0 0 1 266.9 82.5" />
+                    </symbol>
+                </defs>
+            </svg>
+
+            <div id="water-moon-container" style="position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: radial-gradient(ellipse at 30% 20%, #1a1008 0%, #0a0a08 60%, #050503 100%);">
+                <div id="game-wrapper" class="visible">
+                    <div class="game-container" id="gameBox">
+                        <div class="corner-bracket tl"></div><div class="corner-bracket tr"></div>
+                        <div class="corner-bracket bl"></div><div class="corner-bracket br"></div>
+
+                        <div class="hud-title">水月镜花</div>
+                        <div class="win-overlay"></div>
+
+                        <div class="star" style="left:80px;top:60px;width:3px;height:3px;--s-dur:2.8s;--s-delay:0s;--s-opMin:0.15;--s-opMax:0.45;"></div>
+                        <div class="star" style="left:160px;top:35px;width:2px;height:2px;--s-dur:3.5s;--s-delay:0.7s;--s-opMin:0.1;--s-opMax:0.35;"></div>
+                        <div class="star" style="left:240px;top:80px;width:2px;height:2px;--s-dur:4s;--s-delay:1.2s;--s-opMin:0.12;--s-opMax:0.4;"></div>
+                        <div class="star" style="left:400px;top:45px;width:3px;height:3px;--s-dur:3.1s;--s-delay:0.4s;--s-opMin:0.15;--s-opMax:0.5;"></div>
+                        <div class="star" style="left:550px;top:70px;width:2px;height:2px;--s-dur:2.5s;--s-delay:1.8s;--s-opMin:0.1;--s-opMax:0.3;"></div>
+                        <div class="star" style="left:680px;top:30px;width:2px;height:2px;--s-dur:3.8s;--s-delay:0.9s;--s-opMin:0.12;--s-opMax:0.38;"></div>
+                        <div class="star" style="left:820px;top:55px;width:3px;height:3px;--s-dur:4.2s;--s-delay:2.1s;--s-opMin:0.15;--s-opMax:0.45;"></div>
+
+                        <div class="firefly" id="ff1" style="left:200px;top:380px;"></div>
+                        <div class="firefly" id="ff2" style="left:480px;top:340px;"></div>
+                        <div class="firefly" id="ff3" style="left:650px;top:390px;"></div>
+                        <div class="firefly" id="ff4" style="left:350px;top:360px;"></div>
+                        <div class="firefly" id="ff5" style="left:730px;top:370px;"></div>
+
+                        <svg class="boat" id="boat" viewBox="0 0 100 60" aria-hidden="true">
+                            <path d="M 10 40 Q 50 56 90 36 L 80 56 L 20 56 Z" fill="#3a2e1d"/>
+                            <path d="M 45 10 L 45 40 L 72 34 Z" fill="#2a1f12"/>
+                            <path d="M 42 14 L 42 40 L 22 38 Z" fill="#2a1f12"/>
+                            <rect x="40" y="8" width="6" height="8" rx="1" fill="#e8b84b" opacity="0.7"/>
+                            <line x1="43" y1="4" x2="43" y2="8" stroke="#5a4020" stroke-width="1"/>
+                        </svg>
+
+                        <div class="bell-container" id="bell" role="button" aria-label="敲钟" tabindex="0">
+                            <svg viewBox="0 0 60 80">
+                                <path d="M 30 6 C 19 6 11 22 11 52 L 4 72 L 56 72 L 49 52 C 49 22 41 6 30 6 Z" fill="#7a6242" />
+                                <path d="M 22 14 C 19 20 17 30 17 42" stroke="rgba(255,255,255,0.12)" stroke-width="3" fill="none" stroke-linecap="round"/>
+                                <circle cx="30" cy="77" r="5.5" fill="#c8a035"/>
+                                <line x1="30" y1="72" x2="30" y2="77" stroke="#8a6a25" stroke-width="2"/>
+                            </svg>
+                        </div>
+
+                        <div class="bell-ripple" id="ripple1"></div>
+                        <div class="bell-ripple bell-ripple-2" id="ripple2"></div>
+                        <div class="bell-ripple bell-ripple-3" id="ripple3"></div>
+                        <div class="timer-bar-wrap" id="timerWrap"><div class="timer-bar" id="timerBar"></div></div>
+
+                        <div class="drag-hint" id="hintMoon"  style="left:700px; top:150px;">↕ 拖动调水位</div>
+                        <div class="drag-hint" id="hintLotus" style="left:50px; top:410px;">↔ 拖动对齐</div>
+                        <div class="drag-hint" id="hintBell"  style="left:116px; top:30px;">点击敲钟</div>
+
+                        <div class="moon" id="moon" role="slider" aria-label="月亮，拖动调整水位"></div>
+
+                        <div class="bridge-real"><svg viewBox="0 0 300 150" class="bridge-group"><use href="#bridge-shape"/></svg></div>
+                        
+                        <div class="magic-arc-real" id="magicArcReal">
+                            <svg id="magicArcSvg" viewBox="0 0 300 150" style="fill:none;stroke:var(--magic-color);stroke-width:32;stroke-linecap:round;">
+                                <use href="#magic-shape"/>
+                            </svg>
+                        </div>
+
+                        <div class="water-container" id="waterBox">
+                            <div class="water-layer distorted">
+                                <div class="reflection-group">
+                                    <svg viewBox="0 0 300 150" class="bridge-group" style="position:absolute;left:300px;opacity:0.55;"><use href="#bridge-shape"/></svg>
+                                    <svg viewBox="0 0 300 150" style="position:absolute;left:300px;fill:none;stroke:var(--magic-color);stroke-width:32;stroke-linecap:round;opacity:0.55;transform: translateX(calc(var(--lotus-x) * 1px - 542px));"><use href="#magic-shape"/></svg>
+                                </div>
+                            </div>
+                            <div class="water-layer clear">
+                                <div class="reflection-group">
+                                    <svg viewBox="0 0 300 150" class="bridge-group" style="position:absolute;left:300px;opacity:0.82;"><use href="#bridge-shape"/></svg>
+                                    <svg viewBox="0 0 300 150" style="position:absolute;left:300px;fill:none;stroke:var(--magic-color);stroke-width:32;stroke-linecap:round;opacity:0.9;transform: translateX(calc(var(--lotus-x) * 1px - 542px));"><use href="#magic-shape"/></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lotus-leaf" id="lotus" role="slider" aria-label="荷叶，拖动对齐虚桥">
+                            <svg viewBox="0 0 70 25">
+                                <ellipse cx="35" cy="13" rx="31" ry="8.5" fill="#4a5d38"/>
+                                <line x1="35" y1="5" x2="35" y2="21" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+                                <line x1="14" y1="13" x2="35" y2="9"  stroke="rgba(255,255,255,0.1)"  stroke-width="1"/>
+                                <line x1="56" y1="13" x2="35" y2="9"  stroke="rgba(255,255,255,0.1)"  stroke-width="1"/>
+                                <ellipse cx="35" cy="6" rx="4" ry="5.5" fill="#d47fa0"/>
+                                <ellipse cx="35" cy="5" rx="2.5" ry="3.5" fill="#e8a0bc"/>
+                            </svg>
+                        </div>
+
+                        <div class="petal" style="left:200px;top:-10px;--p-dur:4.2s;--p-delay:1.2s;--p-dx:40px;--p-rot:320deg;">🌸</div>
+                        <div class="petal" style="left:350px;top:-10px;--p-dur:3.8s;--p-delay:1.6s;--p-dx:-30px;--p-rot:-250deg;">✿</div>
+                        <div class="petal" style="left:500px;top:-10px;--p-dur:4.5s;--p-delay:1.0s;--p-dx:60px;--p-rot:400deg;">🌸</div>
+                        <div class="petal" style="left:640px;top:-10px;--p-dur:3.5s;--p-delay:1.8s;--p-dx:-20px;--p-rot:-300deg;">✿</div>
+                        <div class="petal" style="left:150px;top:-10px;--p-dur:4.8s;--p-delay:2.0s;--p-dx:80px;--p-rot:280deg;">🌸</div>
+                        <div class="petal" style="left:750px;top:-10px;--p-dur:4.0s;--p-delay:2.4s;--p-dx:-50px;--p-rot:-360deg;">✿</div>
+
+                        <div class="success-text-wrap">
+                            <span class="success-main">水月交辉</span>
+                            <span class="success-sub">因势利导 · 济世为怀</span>
+                        </div>
+                        <div id="phase2-banner">以石筑桥 · 先安左右拱石，再置龙门石</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="position: absolute; bottom: 30px; z-index: 1002;">
+                <button id="btn-next-level2" class="btn hidden" style="background-color: #6ed1d8; color: #0a0a08;" onclick="finishLevel('level2', 'scene-level3')">洪患已除：前往下一关</button>
+            </div>
+        </section>
+
+        <section id="scene-level3" class="scene hidden">
+            <div class="level-header">
+                <h2>第三章：明理（礼法为纲）</h2>
+                <p class="mission-text">任务：使用键盘 [A]/[D] 或[◀]/[▶] 键移动，接住10块【青灰瓦】，避开【黄琉璃】！</p>
+                <div class="level-story">
+                    <p><strong>【背景】</strong>进府修缮官衙，钦差日可临，诟病府衙“逾制违礼”，知府威严岌岌可危。你需要亲自上阵接取合乎礼制的青灰瓦重新铺设屋顶。</p>
+                </div>
+            </div>
+            
+            <div id="level3-workspace" class="workspace layout-column" style="position: relative; padding: 15px; height: auto; min-height: 580px;">
+                <div id="falling-game-container" style="position: relative; width: 100%; max-width: 650px; height: 550px; margin: 0 auto; background: linear-gradient(to bottom, #87CEEB, #e8dcc7); overflow: hidden; border: 4px solid #8b4513; border-radius: 8px; box-shadow: inset 0 0 20px rgba(0,0,0,0.1); touch-action: none;">
+                    
+                    <div id="l3-score-board" style="position: absolute; top: 15px; left: 15px; font-size: 1.5rem; font-weight: bold; color: #fff; background: rgba(93, 64, 55, 0.8); padding: 8px 15px; border-radius: 5px; z-index: 10; border: 2px solid #fdf8eb;">
+                        收集青瓦: <span id="l3-score">0</span> / 10
+                    </div>
+                    
+                    <button id="btn-start-l3-game" class="btn" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 20; padding: 15px 40px; font-size: 1.8rem;" onclick="startLevel3Game()">开始游戏</button>
+                    
+                    <div id="l3-player" style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); 
+                                width: 95px; height: 95px; 
+                                background-image: url('assets/1.png'); 
+                                background-size: 135%; 
+                                background-position: center 20%; 
+                                background-repeat: no-repeat;
+                                background-color: #fff; 
+                                border: 4px solid #8b4513; 
+                                border-radius: 50%; 
+                                box-shadow: 0 5px 15px rgba(0,0,0,0.4); z-index: 15; user-select: none;">
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <button id="btn-next-level3" class="btn hidden" onclick="finishLevel('level3', 'scene-level4-maze')">修缮完毕：前往下一关</button>
+            </div>
+        </section>
+
+        <section id="scene-level4-maze" class="scene hidden">
+            <div class="level-header">
+                <h2>第四章上：寻材（皇城巅峰）</h2>
+                <p class="mission-text">任务：使用 [W][A][S][D] 探索木厂迷雾，找齐4种【真材料】，避开【假材料】。</p>
+                <div class="level-story">
+                    <p><strong>【背景】</strong>承朝命入京主持太和殿封顶大典。造物前需入木厂迷雾辨明真假，集齐汉白玉、金丝楠、榫卯大木与黄琉璃瓦，方能按序搭建。</p>
+                </div>
+            </div>
+
+            <div id="level4-maze-workspace" class="workspace layout-column" style="position: relative; padding: 15px; height: auto; min-height: 600px;">
+                <div id="maze-zone" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                    <canvas id="l4GameCanvas" width="600" height="600" style="width: 420px; height: 420px; border: 3px solid #8c6a43; border-radius: 16px; box-shadow: inset 0 0 0 4px #36261a, 0 12px 0 #120c08, 0 8px 15px black; background: #1c130d;"></canvas>
+                    
+                    <div id="inventory-zone" class="inventory-zone" style="margin-top: 25px; width: 90%;">
+                        <div class="inv-slot" id="inv-base">待收集: 须弥座真材</div>
+                        <div class="inv-slot" id="inv-column">待收集: 柱网真材</div>
+                        <div class="inv-slot" id="inv-dougong">待收集: 斗拱真材</div>
+                        <div class="inv-slot" id="inv-roof">待收集: 屋顶真材</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="scene-level4-build" class="scene hidden">
+            <div class="level-header">
+                <h2>第四章下：登极（皇宫营建）</h2>
+                <p class="mission-text">任务：真材已齐，请按自下而上顺序完成皇家大木作营建。</p>
+                <div class="level-story">
+                    <p><strong>【背景】</strong>真材集齐，工匠待命。须弥座定基，柱网立身，斗拱承势，重檐庑殿顶封尊，千年营造智慧即将融入这座雄伟大殿。</p>
+                </div>
+            </div>
+
+            <div id="level4-build-workspace" class="workspace layout-column" style="position: relative; padding: 10px; height: 500px;">
+                <div id="manual-build-zone" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: flex-end; gap: 30px;">
+                    <div class="items-panel" id="palace-parts" style="height: auto; padding: 20px; border-radius: 8px;">
+                        <p style="color:#b71c1c; font-weight:bold; margin-top:0;">请按自下而上顺序营建：</p>
+                        <button class="btn palace-btn" id="btn-stack-base" onclick="stackPalace('base')">1. 汉白玉须弥座</button>
+                        <button class="btn palace-btn" id="btn-stack-column" onclick="stackPalace('column')">2. 朱红柱网</button>
+                        <button class="btn palace-btn" id="btn-stack-dougong" onclick="stackPalace('dougong')">3. 踩斗拱</button>
+                        <button class="btn palace-btn" id="btn-stack-roof" onclick="stackPalace('roof')">4. 重檐庑殿顶</button>
+                    </div>
+
+                    <div class="palace-build-zone" id="palace-build-zone" style="flex: 1; height: 350px; background: transparent; border: none; box-shadow: none;">
+                        <div id="p-roof" class="p-part hidden">👑 重檐庑殿顶</div>
+                        <div id="p-dougong" class="p-part hidden">🧩 踩斗拱层</div>
+                        <div id="p-column" class="p-part hidden">⛩️ 朱红大柱</div>
+                        <div id="p-base" class="p-part hidden">🧱 汉白玉须弥座</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <button id="btn-speech" class="btn hidden" onclick="startSpeechRecognition()">🎤 大喊：上梁大吉！</button>
+                <button id="btn-next-level4" class="btn hidden" onclick="finishLevel('level4', 'scene-outro')">完成巨作，匠心永续</button>
+            </div>
+        </section>
+
+        <section id="scene-outro" class="scene hidden">
+            <div class="story-box">
+                <h2>《木石天工》</h2>
+                <p>木石有灵，匠心无尽，这千年造物之路终究铭刻于卷册之上...</p>
+                <div class="grid-container">
+                    <div class="grid-card"><div class="flip-card-inner"><div class="flip-card-front">🏡 安居</div><div class="flip-card-back"><h4>因地制宜</h4><p>主次分明，中轴有序，起居与杂用各得其所。</p></div></div></div>
+                    <div class="grid-card"><div class="flip-card-inner"><div class="flip-card-front">🌉 济世</div><div class="flip-card-back"><h4>敞肩大拱</h4><p>赵州桥式设计，疏导水患，力学典范。</p></div></div></div>
+                    <div class="grid-card"><div class="flip-card-inner"><div class="flip-card-front">🏛️ 明理</div><div class="flip-card-back"><h4>礼法为纲</h4><p>青砖灰瓦，尊卑有度，彰显不可逾越的秩序灵魂。</p></div></div></div>
+                    <div class="grid-card"><div class="flip-card-inner"><div class="flip-card-front">🏯 登极</div><div class="flip-card-back"><h4>皇权巅峰</h4><p>须弥座与踩斗拱承托重檐庑殿顶，凝结中国木构最高规格。</p></div></div></div>
+                </div>
+                <button class="btn" style="margin-top: 30px;" onclick="location.reload()">重新体验</button>
+            </div>
+        </section>
+
+        <div id="story-overlay" class="hidden" onclick="advanceStory()">
+
+            <div id="music-settings"
+                 onclick="event.stopPropagation()"
+                 onmousedown="event.stopPropagation()"
+                 onmouseup="event.stopPropagation()"
+                 onpointerdown="event.stopPropagation()"
+                 onpointerup="event.stopPropagation()"
+                 ontouchstart="event.stopPropagation()"
+                 ontouchend="event.stopPropagation()">
+
+                <button id="music-settings-btn"
+                        type="button"
+                        title="音乐设置"
+                        aria-label="音乐设置"
+                        aria-expanded="false"
+                        aria-controls="music-settings-panel">
+                    <span aria-hidden="true">⚙</span>
+                    <span>设置</span>
+                </button>
+
+                <div id="music-settings-panel" class="hidden" aria-hidden="true">
+                    <div class="music-panel-title">音乐设置</div>
+
+                    <div class="music-volume-row">
+                        <span class="music-label">音量</span>
+                        <input id="bgm-volume" type="range" min="0" max="100" value="50" step="1">
+                        <span id="bgm-volume-value">50%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="story-avatar-container">
+                <img id="story-avatar" src="" alt="NPC立绘" class="hidden">
+            </div>
+
+            <div id="story-dialog-box">
+                <div id="story-name">角色名字</div>
+                <div id="story-text">这里是剧情对话内容...</div>
+                <div class="story-hint">点击屏幕继续 ▼</div>
+            </div>
+        </div>
+
+        <div id="npc-lu-shifu" class="hidden">
+            <div class="npc-header">
+                <span class="avatar npc-header-avatar">
+                    <img id="npc-header-lu-img" class="npc-header-lu-img" src="assets/鲁师傅.png" alt="鲁师傅头像">
+                    <span>鲁师傅</span>
+                </span>
+                <span class="status">🟢 在线</span>
+            </div>
+
+            <div class="dialog-box chat-box" id="lu-dialog" aria-live="polite">
+                徒儿，建筑之术，顺应天理人情。遇到难处尽可问老夫！
+            </div>
+
+            <div class="input-area">
+                <input type="text" id="ai-input" placeholder="输入你想问鲁师傅的问题...">
+                <button type="button" onclick="askLuShifu()">请教</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/story.js"></script>  
+    <script src="js/npc-ai.js"></script> 
+    <script src="js/level1.js"></script>
+    <script src="js/level2.js"></script>
+    <script src="js/level3.js"></script>
+    <script src="js/level4.js"></script> 
+</body>
+</html>
